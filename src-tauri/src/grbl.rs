@@ -146,6 +146,7 @@ impl Grbl {
         mut on_position: impl FnMut(usize, (f64, f64)),
     ) -> Result<Vec<String>, String> {
         let lines = self.lines.lock().unwrap();
+        discard_old_lines(&lines)?;
         let mut responses = Vec::new();
         let mut status = StatusPoll::new();
         // Sent and not answered yet: the command's index and its length (with the newline).
@@ -396,4 +397,35 @@ fn wait_for_banner(lines: &Receiver<String>, timeout: Duration) -> bool {
 /// Discards received lines until the laser has been silent for `QUIET_TIME`.
 fn discard_until_quiet(lines: &Receiver<String>) {
     while lines.recv_timeout(QUIET_TIME).is_ok() {}
+}
+
+/// Discards the lines the laser sent while no command was waiting. Left in the queue,
+/// they would be taken as the replies to the next commands (an old "ALARM:1" as the
+/// reply to "M4 S0"). A startup message among them means the laser restarted on its
+/// own and no longer knows where the head is: an error, until Home is clicked.
+fn discard_old_lines(lines: &Receiver<String>) -> Result<(), String> {
+    let mut restarted = false;
+    while let Ok(line) = lines.try_recv() {
+        restarted |= line.starts_with("Grbl");
+    }
+    if restarted { Err("Laser restarted. Click Home.".to_string()) } else { Ok(()) }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn old_lines_are_discarded_and_a_restart_is_an_error() {
+        let (tx, rx) = mpsc::channel();
+        tx.send("ok".to_string()).unwrap();
+        tx.send("ALARM:1".to_string()).unwrap();
+        assert_eq!(discard_old_lines(&rx), Ok(()));
+        assert!(rx.try_recv().is_err());
+
+        tx.send("Grbl 1.1h ['$' for help]".to_string()).unwrap();
+        tx.send("ok".to_string()).unwrap();
+        assert_eq!(discard_old_lines(&rx), Err("Laser restarted. Click Home.".to_string()));
+        assert_eq!(discard_old_lines(&rx), Ok(()));
+    }
 }

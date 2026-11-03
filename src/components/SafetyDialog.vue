@@ -4,6 +4,7 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { X } from "lucide-vue-next";
 import { call } from "../laser";
+import { STOP_KEY_NAME } from "../keys";
 
 /** firstRun: it must be accepted (no closing with Esc, ✕ or a click outside). */
 const props = defineProps<{ firstRun: boolean }>();
@@ -40,7 +41,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKey));
         <li>Engraving and cutting make smoke and fumes: ventilate the room or use an exhaust.</li>
         <li>Never cut PVC or vinyl: they release chlorine gas, harmful to you and to the machine.</li>
         <li>Materials can catch fire: keep a fire extinguisher at hand.</li>
-        <li>To stop a job at once: the Stop button, or the Pause key.</li>
+        <li>To stop a job at once: the Stop button, or the {{ STOP_KEY_NAME }} key.</li>
         <li>Your laser's manufacturer instructions come first.</li>
         <li>LaserHM is provided as is, without any warranty; you use it at your own risk.</li>
       </ul>

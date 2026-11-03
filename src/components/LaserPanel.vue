@@ -17,7 +17,7 @@ import {
 } from "../laser";
 import { editor, selectedShapes } from "../editor";
 import { rasterData } from "../images";
-import { MOD } from "../keys";
+import { MOD, STOP_KEY, STOP_KEY_NAME } from "../keys";
 
 // Button rules:
 //   not connected                -> all disabled
@@ -82,10 +82,10 @@ const canPause = computed(
 );
 const canStop = computed(() => status.busy);
 
-// Pause stops at once, wherever the focus is (capture: before every other handler).
-// Not Esc: it already cancels many things on the canvas.
+// The stop key (Pause; Esc on macOS) stops at once, wherever the focus is (capture: before
+// every other handler). Only while the laser is busy: otherwise Esc cancels things on the canvas.
 function onStopKey(event: KeyboardEvent) {
-  if (event.key === "Pause" && canStop.value) {
+  if (event.key === STOP_KEY && canStop.value) {
     event.preventDefault();
     event.stopPropagation();
     call("stop");
@@ -289,7 +289,7 @@ function onChecksClosed() {
       <button
         class="stop"
         :disabled="!canStop"
-        title="Stop immediately (soft reset), then unlock the laser; shortcut: Pause"
+        :title="`Stop immediately (soft reset), then unlock the laser; shortcut: ${STOP_KEY_NAME}`"
         @click="call('stop')"
       >
         <Square :size="16" /> Stop

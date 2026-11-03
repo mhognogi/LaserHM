@@ -1,7 +1,7 @@
 # LaserHM
 
 LaserHM is a program to design, cut and engrave with a laser cutter.
-It controls lasers with a GRBL controller. It works on Windows. It is free and open source.
+It controls lasers with a GRBL controller. It works on Windows and macOS. It is free and open source.
 
 ## Why LaserHM
 
@@ -60,7 +60,9 @@ Claude cannot start the laser: you always start the job.
 ## Download and install
 
 1. Go to the [Releases page](https://github.com/mhognogi/laserHM/releases).
-2. Download the file that ends in `x64-setup.exe`.
+2. Download the file for your computer:
+   - Windows: the file that ends in `x64-setup.exe`.
+   - Mac: the file that ends in `universal.dmg`.
 3. Install LaserHM.
 
 For all the steps, see the [user guide](docs/user-guide.md#1-install-laserhm).
@@ -69,7 +71,7 @@ For all the steps, see the [user guide](docs/user-guide.md#1-install-laserhm).
 
 - A laser with a GRBL 1.1 controller. Connect it with a USB cable.
 - The laser mode of the controller must be on (GRBL setting `$32=1`).
-- Windows 10 or Windows 11.
+- Windows 10 or Windows 11, or macOS. *(macOS is tested only on macOS 27, on a Mac with an Apple processor.)*
 
 ## How to use LaserHM
 
@@ -77,7 +79,7 @@ Read the [user guide](docs/user-guide.md).
 
 ## Tested lasers
 
-LaserHM is tested only on a **Mecpow X3 Pro** diode laser, on Windows.
+LaserHM is tested only on a **Mecpow X3 Pro** diode laser, on Windows and macOS.
 Other GRBL lasers can operate differently.
 
 Did you use LaserHM with a different laser? Please tell us in an [issue](https://github.com/mhognogi/laserHM/issues).
@@ -93,7 +95,7 @@ Write the model of your laser, what worked and what did not work.
 - Open a window or use an exhaust. Cutting makes smoke.
 - Do not cut PVC or vinyl. These materials release chlorine gas.
 - Keep a fire extinguisher near the laser.
-- To stop a job immediately, click **Stop** or push the **Pause** key on the keyboard.
+- To stop a job immediately, click **Stop** or push the **Pause** key on the keyboard. On a Mac, push the **Esc** key.
 - Obey the instructions of your laser manufacturer first.
 - LaserHM has no warranty. You use it at your own risk.
 

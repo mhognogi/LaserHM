@@ -14,15 +14,16 @@ LaserHM controls lasers with a GRBL controller.
 - **Top bar**: the bar under the menu. It shows the position and size of the selected shapes.
 - **Tool bar**: the column of buttons on the left side.
 - **Laser panel**: the column on the right side. It has the Start button.
+- **Ctrl**: the Control key. On a Mac, push the ⌘ (Command) key instead.
 
 ## 1. Install LaserHM
 
 ### Before you start
 
-- A computer with Windows 10 or Windows 11.
+- A computer with Windows 10 or Windows 11, or a Mac.
 - An internet connection.
 
-### Procedure
+### Install on Windows
 
 1. Go to the [Releases page](https://github.com/mhognogi/laserHM/releases).
 2. Under **Assets**, download the file that ends in `x64-setup.exe`.
@@ -32,6 +33,27 @@ LaserHM controls lasers with a GRBL controller.
 5. Follow the steps of the installer.
 
 **Result:** LaserHM is in the Start menu.
+
+### Install on a Mac
+
+1. Go to the [Releases page](https://github.com/mhognogi/laserHM/releases).
+2. Under **Assets**, download the file that ends in `universal.dmg`.
+3. Open the file.
+
+   **Result:** A window opens. It shows LaserHM and the Applications folder.
+
+4. Drag LaserHM to the Applications folder.
+5. Open the Applications folder. Double-click LaserHM.
+6. If macOS shows "Apple could not verify LaserHM…", click **Done**.
+   Then do these steps:
+   1. Click the Apple menu > **System Settings** > **Privacy & Security**.
+   2. Scroll down. Next to "LaserHM was blocked", click **Open Anyway**.
+   3. Type the password of your Mac.
+
+   macOS shows this message because the app has no Apple signature.
+   You do these steps only one time. *(The texts of the messages are not verified in all macOS versions.)*
+
+**Result:** LaserHM opens. LaserHM is in the Applications folder.
 
 ---
 
@@ -217,7 +239,7 @@ To change the Fire power, use the **Fire** field in the top bar.
 
 ### Stop the job
 
-- Click **Stop** or push the **Pause** key.
+- Click **Stop** or push the **Pause** key. On a Mac, push the **Esc** key.
 
 **Result:** The laser stops immediately. The status box shows "Stopped. Connected to laser".
 
@@ -234,6 +256,8 @@ Close the reminder window. Then click **Start** again.
 - The status box shows "The shape must be entirely inside the work area": move the shapes into the work area.
 - The status box shows "Laser replied "error:5"…": homing is off on your laser. *(Not verified on a laser without limit switches.)*
 - The status box shows "Laser did not respond to command…": examine the USB cable. Then turn the laser off and on.
+- The status box shows "Laser restarted. Click Home.": the laser restarted. It does not know the position of the laser head.
+  Click **Home**. Then start the job again. If the laser restarts frequently, connect the USB cable directly to the computer, not through a USB hub.
 
 ---
 
@@ -302,6 +326,9 @@ After the calibration, the camera image is in the correct position on the canvas
 ### Before you start
 
 - A camera is connected to the computer and points at the work area.
+- On a Mac: the first time, macOS asks if LaserHM can use the camera. Click **Allow**.
+  If you clicked **Don't Allow**, click the Apple menu > **System Settings** > **Privacy & Security** > **Camera**. Then turn on LaserHM.
+  *(The texts of the macOS messages are not verified.)*
 
 ### Procedure
 
@@ -355,12 +382,15 @@ Claude Desktop can draw shapes on the LaserHM canvas. Claude cannot start the la
 
 ### Procedure
 
-1. Find the LaserHM program file. Right-click the LaserHM shortcut in the Start menu.
-   Click **Open file location**. *(Not verified: the folder is usually
-   `C:\Users\<your name>\AppData\Local\LaserHM`, and the file name can be `laserhm.exe` or `LaserHM.exe`.)*
+1. Find the LaserHM program file.
+   - On Windows: right-click the LaserHM shortcut in the Start menu.
+     Click **Open file location**. *(Not verified: the folder is usually
+     `C:\Users\<your name>\AppData\Local\LaserHM`, and the file name can be `laserhm.exe` or `LaserHM.exe`.)*
+   - On a Mac: the program file is `/Applications/LaserHM.app/Contents/MacOS/laserhm`.
 2. Open the Claude Desktop configuration file `claude_desktop_config.json`.
    In Claude Desktop, click **Settings** > **Developer** > **Edit Config**. *(Not verified in all Claude Desktop versions.)*
-3. Add these lines. Use the path of the program file from step 1. Write each `\` as `\\`.
+3. Add these lines. Use the path of the program file from step 1. On Windows, write each `\` as `\\`.
+   On a Mac, the line is `"command": "/Applications/LaserHM.app/Contents/MacOS/laserhm",`.
 
    ```json
    "mcpServers": {
@@ -390,5 +420,5 @@ Claude Desktop can draw shapes on the LaserHM canvas. Claude cannot start the la
 - Open a window or use an exhaust. Cutting makes smoke.
 - Do not cut PVC or vinyl. These materials release chlorine gas.
 - Keep a fire extinguisher near the laser.
-- To stop a job immediately, click **Stop** or push the **Pause** key on the keyboard.
+- To stop a job immediately, click **Stop** or push the **Pause** key on the keyboard. On a Mac, push the **Esc** key.
 - Obey the instructions of your laser manufacturer first.

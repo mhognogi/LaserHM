@@ -10,3 +10,8 @@ export const MOD = isMac ? "⌘" : "Ctrl";
 export function modKey(event: MouseEvent | KeyboardEvent): boolean {
   return isMac ? event.metaKey : event.ctrlKey;
 }
+
+/** The key that stops a job at once. Mac keyboards have no Pause key, so Esc there. */
+export const STOP_KEY = isMac ? "Escape" : "Pause";
+/** Its name in texts. */
+export const STOP_KEY_NAME = isMac ? "Esc" : "Pause";
