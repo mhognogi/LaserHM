@@ -1,5 +1,6 @@
 //! User settings, saved to disk between runs
-//! (settings.json in the app's config folder, e.g. %APPDATA%\com.mhogn.laserhm).
+//! (settings.json in the app's config folder: %APPDATA%\com.mhogn.laserhm on Windows,
+//! ~/Library/Application Support/com.mhogn.laserhm on macOS).
 
 use std::fs;
 use std::path::PathBuf;

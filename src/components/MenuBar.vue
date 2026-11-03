@@ -6,6 +6,7 @@ import { adjustImageId, importImage } from "../images";
 import { status } from "../laser";
 import { materialTestOpen } from "../materialTest";
 import { redo, undo } from "../history";
+import { modKey, MOD } from "../keys";
 import { newProject, openProject, saveProject, saveProjectAs } from "../project";
 import AboutDialog from "./AboutDialog.vue";
 import HowToDialog from "./HowToDialog.vue";
@@ -49,18 +50,18 @@ const menus = computed<{ name: string; title: string; items?: Item[] }[]>(() => 
     name: "File",
     title: "Projects and images",
     items: [
-      { name: "New", shortcut: "Ctrl+N", title: "Start an empty project", action: newProject },
-      { name: "Open…", shortcut: "Ctrl+O", title: "Open a LaserHM project (.lhm)", action: openProject },
-      { name: "Save", shortcut: "Ctrl+S", title: "Save the project to its file", action: saveProject },
+      { name: "New", shortcut: `${MOD}+N`, title: "Start an empty project", action: newProject },
+      { name: "Open…", shortcut: `${MOD}+O`, title: "Open a LaserHM project (.lhm)", action: openProject },
+      { name: "Save", shortcut: `${MOD}+S`, title: "Save the project to its file", action: saveProject },
       {
         name: "Save As…",
-        shortcut: "Ctrl+Shift+S",
+        shortcut: `${MOD}+Shift+S`,
         title: "Save the project to a new file",
         action: saveProjectAs,
       },
       {
         name: "Import…",
-        shortcut: "Ctrl+I",
+        shortcut: `${MOD}+I`,
         title: "Import an image (PNG, JPG, BMP) to engrave it line by line",
         action: () => fileInput.value?.click(),
       },
@@ -70,8 +71,8 @@ const menus = computed<{ name: string; title: string; items?: Item[] }[]>(() => 
     name: "Edit",
     title: "Undo and redo",
     items: [
-      { name: "Undo", shortcut: "Ctrl+Z", title: "Undo the last change", action: undo },
-      { name: "Redo", shortcut: "Ctrl+Shift+Z", title: "Do again the last change undone", action: redo },
+      { name: "Undo", shortcut: `${MOD}+Z`, title: "Undo the last change", action: undo },
+      { name: "Redo", shortcut: `${MOD}+Shift+Z`, title: "Do again the last change undone", action: redo },
     ],
   },
   {
@@ -120,7 +121,7 @@ function onPointerDown(event: PointerEvent) {
 function onKey(event: KeyboardEvent) {
   if (event.key === "Escape") open.value = null;
   // File shortcuts, except while typing in a field.
-  if (!event.ctrlKey || (event.target as Element).closest("input, textarea, select")) return;
+  if (!modKey(event) || (event.target as Element).closest("input, textarea, select")) return;
   const actions: Record<string, () => void> = {
     i: () => fileInput.value?.click(),
     n: newProject,

@@ -17,6 +17,7 @@ import {
   Ungroup,
   X,
 } from "lucide-vue-next";
+import { MOD } from "../keys";
 import LaserFireIcon from "./LaserFireIcon.vue";
 
 /** The tool bar's buttons, top to bottom, with the same icons. `mirrored`: as in the tool bar. */
@@ -25,7 +26,7 @@ const TOOLS: { name: string; icon: Component; mirrored?: boolean; text: string[]
     name: "Select",
     icon: MousePointer2,
     text: [
-      "Click a shape to select it. Shift+click adds a shape. Ctrl+click adds or removes a shape.",
+      `Click a shape to select it. Shift+click adds a shape. ${MOD}+click adds or removes a shape.`,
       "Drag on an empty area to select the shapes in a rectangle.",
       "Drag a selected shape to move it. Drag a small square to resize it.",
       "Drag a round arrow near a corner to rotate it. Push Del to delete it.",
@@ -45,24 +46,24 @@ const TOOLS: { name: string; icon: Component; mirrored?: boolean; text: string[]
     name: "Draw Lines",
     icon: PenTool,
     text: [
-      "Click to add points. Click and drag to make a curve. Hold Ctrl for steps of 15°.",
+      `Click to add points. Click and drag to make a curve. Hold ${MOD} for steps of 15°.`,
       "Click the first point to close the shape. Double-click, right-click or push Esc to stop an open line.",
     ],
   },
   {
     name: "Rectangle",
     icon: Square,
-    text: ["Drag to draw. Hold Ctrl for a square. Hold Shift to draw from the center."],
+    text: [`Drag to draw. Hold ${MOD} for a square. Hold Shift to draw from the center.`],
   },
   {
     name: "Ellipse",
     icon: Circle,
-    text: ["Drag to draw. Hold Ctrl for a circle. Hold Shift to draw from the center."],
+    text: [`Drag to draw. Hold ${MOD} for a circle. Hold Shift to draw from the center.`],
   },
   {
     name: "Polygon",
     icon: Hexagon,
-    text: ["Drag to draw a hexagon. Hold Ctrl for equal sides. Hold Shift to draw from the center."],
+    text: [`Drag to draw a hexagon. Hold ${MOD} for equal sides. Hold Shift to draw from the center.`],
   },
   {
     name: "Text",

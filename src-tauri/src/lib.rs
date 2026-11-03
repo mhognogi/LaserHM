@@ -15,7 +15,7 @@ use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        // The Windows Open / Save dialogs (File menu).
+        // The system Open / Save dialogs (File menu).
         .plugin(tauri_plugin_dialog::init())
         .manage(state::AppState::default())
         .manage(mcp::McpState::default())

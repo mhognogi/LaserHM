@@ -152,7 +152,7 @@ fn from_home(job: Vec<String>) -> Vec<String> {
     std::iter::once("$H".to_string()).chain(job).collect()
 }
 
-/// The fonts installed in Windows, sorted by name.
+/// The installed fonts, sorted by name.
 /// `async` + `spawn_blocking`: the first call reads every font file, which takes
 /// a moment, so it runs on a background thread instead of freezing the window.
 #[tauri::command]

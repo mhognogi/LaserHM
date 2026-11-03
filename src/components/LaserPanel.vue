@@ -17,6 +17,7 @@ import {
 } from "../laser";
 import { editor, selectedShapes } from "../editor";
 import { rasterData } from "../images";
+import { MOD } from "../keys";
 
 // Button rules:
 //   not connected                -> all disabled
@@ -249,7 +250,7 @@ function onChecksClosed() {
     <p
       class="status"
       :class="{ connected: status.connected, error: status.error }"
-      title="Status of the laser; select the text to copy it (Ctrl+C)"
+      :title="`Status of the laser; select the text to copy it (${MOD}+C)`"
     >
       {{ message }}
     </p>

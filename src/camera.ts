@@ -27,7 +27,7 @@ async function listCameras() {
     .map((device, index) => ({ deviceId: device.deviceId, label: device.label || `Camera ${index + 1}` }));
 }
 
-/** Starts the video from the chosen camera (asks Windows for permission the first time). */
+/** Starts the video from the chosen camera (asks the system for permission the first time). */
 export async function startCamera() {
   stopCamera();
   try {

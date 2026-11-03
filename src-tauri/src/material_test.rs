@@ -182,7 +182,7 @@ fn format_value(value: f64) -> String {
     }
 }
 
-/// The default font (Arial on Windows, see `text::DEFAULT_FONTS`).
+/// The default font (Arial, see `text::DEFAULT_FONTS`).
 fn label_font() -> Result<text::FontInfo, String> {
     text::default_font().ok_or_else(|| "No font found for the labels".to_string())
 }

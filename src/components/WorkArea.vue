@@ -37,6 +37,7 @@ import { editText, finishText, loadFonts, startText, textEdit, typeKey } from ".
 import { adjustImageId, previewUrl } from "../images";
 import { finishPen, pen, penDown, penMove, penUp } from "../pen";
 import { redo, undo } from "../history";
+import { modKey, MOD } from "../keys";
 import { clearMeasure, endMeasure, measurement, measureTo, startMeasure } from "../measure";
 import {
   addCalibrationPoint,
@@ -349,7 +350,7 @@ const IMAGE_TITLE = "Click to select, drag to move; double-click to adjust the i
 
 /** Tooltip of every shape's outline with the Select tool. */
 const SHAPE_TITLE =
-  "Click to select, drag to move; Shift+click: add to the selection, Ctrl+click: add or remove";
+  `Click to select, drag to move; Shift+click: add to the selection, ${MOD}+click: add or remove`;
 
 /** True while a drawing tool (Ellipse, Rectangle, Polygon) is active. */
 /** True while a tool that clicks points on the canvas is active (crosshair cursor). */
@@ -508,9 +509,9 @@ function handleCursor({ hx, hy }: Handle): string {
 }
 
 function handleTitle({ hx, hy }: Handle): string {
-  if (hx === 0) return "Drag to change the height (Ctrl: from the center)";
-  if (hy === 0) return "Drag to change the width (Ctrl: from the center)";
-  return "Drag to resize (Shift: keep proportions, Ctrl: from the center)";
+  if (hx === 0) return `Drag to change the height (${MOD}: from the center)`;
+  if (hy === 0) return `Drag to change the width (${MOD}: from the center)`;
+  return `Drag to resize (Shift: keep proportions, ${MOD}: from the center)`;
 }
 
 const ROTATE_ARROW_TITLE = "Drag to rotate the selection around its center";
@@ -526,7 +527,7 @@ function startResize(event: PointerEvent, handleIndex: number) {
 function resizeSelected(event: PointerEvent) {
   if (!resize.value) return;
   const { handle, box, snapshot } = resize.value;
-  const resized = resizeFromHandle(box, handle, toMachine(event), event.shiftKey, event.ctrlKey);
+  const resized = resizeFromHandle(box, handle, toMachine(event), event.shiftKey, modKey(event));
   transformGroup(snapshot, box, boxOf(resized));
 }
 
@@ -564,7 +565,7 @@ function onPointerDown(event: PointerEvent) {
   // On the selection: one of its handles, its inside, or a selected shape.
   const onSelection =
     !!handle || !!target.closest("[data-selection]") || (hitId !== null && isSelected(hitId));
-  const modifier = event.shiftKey || event.ctrlKey;
+  const modifier = event.shiftKey || modKey(event);
 
   if (editor.tool === "select") {
     // A rotate arrow: the rotation keeps that corner's cursor while dragging.
@@ -604,7 +605,7 @@ function onPointerDown(event: PointerEvent) {
   if (editor.tool === "line") {
     svg.value!.setPointerCapture(event.pointerId);
     const point = toMachine(event);
-    penDown(point, event.ctrlKey, isOnFirstPoint(point));
+    penDown(point, modKey(event), isOnFirstPoint(point));
     return;
   }
   const type = DRAWING_TOOLS[editor.tool];
@@ -612,7 +613,7 @@ function onPointerDown(event: PointerEvent) {
   // Keep receiving moves even if the pointer leaves the work area while dragging.
   svg.value!.setPointerCapture(event.pointerId);
   const point = toMachine(event);
-  drag.value = { type, start: point, end: point, regular: event.ctrlKey, fromCenter: event.shiftKey };
+  drag.value = { type, start: point, end: point, regular: modKey(event), fromCenter: event.shiftKey };
 }
 
 // ----- Edit Nodes -----
@@ -729,7 +730,7 @@ const penPreview = computed(() => {
  *   box) keeps it, and dragging moves all selected shapes.
  */
 function selectAndStartMove(event: PointerEvent, hitId: number | null, onSelection: boolean) {
-  const additive = event.shiftKey || event.ctrlKey;
+  const additive = event.shiftKey || modKey(event);
   // Pressing on empty space starts a selection rectangle.
   if (hitId === null && !onSelection) {
     if (!additive) clearSelection();
@@ -832,7 +833,7 @@ function onPointerMove(event: PointerEvent) {
     return;
   }
   if (pen.value) {
-    penMove(toMachine(event), event.ctrlKey);
+    penMove(toMachine(event), modKey(event));
     return;
   }
   if (isNodeDragging()) {
@@ -863,7 +864,7 @@ function onPointerMove(event: PointerEvent) {
   if (!drag.value) return;
   drag.value.end = toMachine(event);
   // Modifiers can be pressed or released during the drag, as in LightBurn.
-  drag.value.regular = event.ctrlKey;
+  drag.value.regular = modKey(event);
   drag.value.fromCenter = event.shiftKey;
 }
 
@@ -874,7 +875,7 @@ function moveSelected(event: PointerEvent) {
   let dx = point.x - move.value.start.x;
   let dy = point.y - move.value.start.y;
   // Ctrl: move only horizontally or vertically, whichever is larger (as in LightBurn).
-  if (event.ctrlKey) {
+  if (modKey(event)) {
     if (Math.abs(dx) > Math.abs(dy)) dy = 0;
     else dx = 0;
   }
@@ -980,7 +981,7 @@ function onKeyDown(event: KeyboardEvent) {
   }
   // Edit Nodes: Escape cancels a drag or ends the editing; other keys act on the node
   // or segment under the pointer (and then not on the whole shape).
-  if (nodeEdit.value && !typing && !event.ctrlKey) {
+  if (nodeEdit.value && !typing && !modKey(event)) {
     if (event.key === "Escape") {
       if (isNodeDragging()) cancelNodeDrag();
       else endNodeEdit();
@@ -1007,21 +1008,21 @@ function onKeyDown(event: KeyboardEvent) {
   if (event.key === "Delete") {
     menu.value = null;
     deleteSelected();
-  } else if (event.ctrlKey && event.key.toLowerCase() === "z") {
+  } else if (modKey(event) && event.key.toLowerCase() === "z") {
     event.preventDefault();
     menu.value = null;
     if (event.shiftKey) redo();
     else undo();
-  } else if (event.ctrlKey && event.key.toLowerCase() === "c") {
+  } else if (modKey(event) && event.key.toLowerCase() === "c") {
     copySelected();
-  } else if (event.ctrlKey && event.key.toLowerCase() === "x") {
+  } else if (modKey(event) && event.key.toLowerCase() === "x") {
     // Cut: copied, then removed; Ctrl+V puts it back.
     menu.value = null;
     copySelected();
     deleteSelected();
-  } else if (event.ctrlKey && event.key.toLowerCase() === "v") {
+  } else if (modKey(event) && event.key.toLowerCase() === "v") {
     paste();
-  } else if (event.ctrlKey && event.key.toLowerCase() === "a") {
+  } else if (modKey(event) && event.key.toLowerCase() === "a") {
     // Select all shapes (instead of the browser selecting the page's text).
     event.preventDefault();
     menu.value = null;
@@ -1141,7 +1142,7 @@ onUnmounted(() => {
           :width="selection.right - selection.left"
           :height="selection.top - selection.bottom"
         >
-          <title>Drag to move the selected shapes (Ctrl: only horizontally or vertically)</title>
+          <title>Drag to move the selected shapes ({{ MOD }}: only horizontally or vertically)</title>
         </rect>
         <g
           v-for="shape in editor.shapes"

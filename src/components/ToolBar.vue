@@ -15,6 +15,7 @@ import {
   Type,
   Ungroup,
 } from "lucide-vue-next";
+import { MOD } from "../keys";
 import { canCombine, combine, type BooleanOp } from "../boolean";
 import { breakApart, canBreakApart } from "../breakApart";
 import { editor, type ToolId } from "../editor";
@@ -26,13 +27,13 @@ const tools: { id: ToolId; title: string; icon: Component }[] = [
   {
     id: "select",
     title:
-      "Select: click a shape's outline to select it (Shift: add, Ctrl: add or remove); " +
+      `Select: click a shape's outline to select it (Shift: add, ${MOD}: add or remove); ` +
       "drag on empty space for a selection rectangle (to the right: shapes inside it, " +
       "to the left: also shapes it touches); drag a selected shape to move " +
-      "(Ctrl: only horizontally or vertically); drag a handle to resize " +
-      "(Shift: keep proportions, Ctrl: from the center); drag an arrow outside a corner to rotate; " +
+      `(${MOD}: only horizontally or vertically); drag a handle to resize ` +
+      `(Shift: keep proportions, ${MOD}: from the center); drag an arrow outside a corner to rotate; ` +
       "Del or right-click → Delete removes it; " +
-      "click empty space to deselect; Ctrl+Z undoes the last change (up to 100)",
+      `click empty space to deselect; ${MOD}+Z undoes the last change (up to 100)`,
     icon: MousePointer2,
   },
   {
@@ -48,23 +49,23 @@ const tools: { id: ToolId; title: string; icon: Component }[] = [
     id: "line",
     title:
       "Draw Lines: click to add points (straight segments); click and drag to curve the segment " +
-      "ending there; Ctrl: 15° steps; click the first point to close the shape; " +
+      `ending there; ${MOD}: 15° steps; click the first point to close the shape; ` +
       "double-click, right-click, Enter or Esc to end an open line",
     icon: PenTool,
   },
   {
     id: "rectangle",
-    title: "Rectangle: drag to draw; hold Ctrl for a square, Shift to draw from the center",
+    title: `Rectangle: drag to draw; hold ${MOD} for a square, Shift to draw from the center`,
     icon: Square,
   },
   {
     id: "ellipse",
-    title: "Ellipse: drag to draw; hold Ctrl for a circle, Shift to draw from the center",
+    title: `Ellipse: drag to draw; hold ${MOD} for a circle, Shift to draw from the center`,
     icon: Circle,
   },
   {
     id: "polygon",
-    title: "Polygon: drag to draw a hexagon; hold Ctrl for equal sides, Shift to draw from the center",
+    title: `Polygon: drag to draw a hexagon; hold ${MOD} for equal sides, Shift to draw from the center`,
     icon: Hexagon,
   },
   {

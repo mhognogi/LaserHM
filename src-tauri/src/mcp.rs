@@ -1,6 +1,6 @@
 //! MCP (Model Context Protocol): lets Claude Desktop draw on LaserHM's canvas.
 //!
-//! Claude Desktop starts `laserhm.exe --mcp` (the bridge, `run_bridge`) and talks to it
+//! Claude Desktop starts `laserhm --mcp` (the bridge, `run_bridge`) and talks to it
 //! over stdin/stdout: JSON-RPC 2.0, one message per line. The bridge forwards each tool
 //! call to the running LaserHM over a local TCP connection (127.0.0.1 only), proving
 //! itself with the secret token LaserHM wrote to mcp.json in its config folder.
@@ -56,9 +56,14 @@ struct ToolAnswer {
 }
 
 /// LaserHM's config folder, found without Tauri (the bridge has no app), as Tauri finds it:
-/// %APPDATA%\<identifier>.
+/// Windows %APPDATA%\<identifier>; macOS ~/Library/Application Support/<identifier>.
 fn app_config_dir() -> Option<PathBuf> {
-    Some(PathBuf::from(std::env::var_os("APPDATA")?).join(IDENTIFIER))
+    let base = if cfg!(windows) {
+        PathBuf::from(std::env::var_os("APPDATA")?)
+    } else {
+        PathBuf::from(std::env::var_os("HOME")?).join("Library/Application Support")
+    };
+    Some(base.join(IDENTIFIER))
 }
 
 fn endpoint_file(config_dir: PathBuf) -> PathBuf {
@@ -152,7 +157,7 @@ pub fn mcp_respond(state: State<McpState>, id: u64, ok: bool, text: String) {
     }
 }
 
-// ----- `laserhm.exe --mcp`: the bridge started by Claude Desktop -----
+// ----- `laserhm --mcp`: the bridge started by Claude Desktop -----
 
 /// What Claude reads first: how the tools describe the drawing.
 const INSTRUCTIONS: &str = "LaserHM is a laser cutter/engraver app. These tools draw on its canvas, \

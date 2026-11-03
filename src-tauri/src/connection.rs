@@ -57,6 +57,9 @@ fn find_laser() -> Option<Laser> {
     ports
         .iter()
         .filter(|port| matches!(port.port_type, SerialPortType::UsbPort(_)))
+        // macOS shows each port twice: /dev/cu.* and /dev/tty.*. Opening tty.* can wait
+        // for a modem signal that a laser never sends, so only cu.* is tried.
+        .filter(|port| !port.port_name.starts_with("/dev/tty."))
         .find_map(|port| match connect(&port.port_name) {
             Ok(laser) => Some(laser),
             Err(error) => {

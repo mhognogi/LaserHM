@@ -95,7 +95,7 @@ function onFontKey(event: KeyboardEvent) {
       if (before >= 0) preview(before);
     }
     closeList();
-  } else if (event.key.length === 1 && !event.ctrlKey) {
+  } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
     const letter = event.key.toLowerCase();
     const count = fonts.value.length;
     for (let step = 1; step <= count; step++) {

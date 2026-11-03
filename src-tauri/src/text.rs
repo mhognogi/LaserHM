@@ -1,4 +1,4 @@
-//! Text: the fonts installed in Windows, and the outlines of a text in a font.
+//! Text: the installed fonts, and the outlines of a text in a font.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -45,22 +45,40 @@ pub fn installed_fonts() -> Vec<FontInfo> {
 }
 
 /// The folders with installed fonts: for all users and for this user only.
-/// Windows\Fonts and the user's Fonts folder.
+/// Windows: Windows\Fonts and the user's Fonts folder. macOS: /System/Library/Fonts,
+/// /Library/Fonts and ~/Library/Fonts (with their subfolders).
 fn font_dirs() -> Vec<PathBuf> {
     let mut dirs = Vec::new();
-    if let Ok(windows) = std::env::var("WINDIR") {
-        dirs.push(PathBuf::from(windows).join("Fonts"));
-    }
-    if let Ok(local) = std::env::var("LOCALAPPDATA") {
-        dirs.push(PathBuf::from(local).join("Microsoft").join("Windows").join("Fonts"));
+    if cfg!(windows) {
+        if let Ok(windows) = std::env::var("WINDIR") {
+            dirs.push(PathBuf::from(windows).join("Fonts"));
+        }
+        if let Ok(local) = std::env::var("LOCALAPPDATA") {
+            dirs.push(PathBuf::from(local).join("Microsoft").join("Windows").join("Fonts"));
+        }
+    } else if cfg!(target_os = "macos") {
+        dirs.push(PathBuf::from("/System/Library/Fonts"));
+        dirs.push(PathBuf::from("/Library/Fonts"));
+        if let Ok(home) = std::env::var("HOME") {
+            dirs.push(PathBuf::from(home).join("Library/Fonts"));
+        }
     }
     dirs
 }
 
-/// The font files in `dir`.
-fn font_files(dir: &Path, files: &mut Vec<PathBuf>) {
+/// Subfolders followed at most this deep (macOS keeps Arial in Fonts/Supplemental).
+const MAX_FONT_DEPTH: usize = 2;
+
+/// The font files in `dir` and its subfolders.
+fn font_files(dir: &Path, depth: usize, files: &mut Vec<PathBuf>) {
     let Ok(entries) = fs::read_dir(dir) else { return };
     for path in entries.flatten().map(|entry| entry.path()) {
+        if path.is_dir() {
+            if depth < MAX_FONT_DEPTH {
+                font_files(&path, depth + 1, files);
+            }
+            continue;
+        }
         let extension = path.extension().and_then(|e| e.to_str()).unwrap_or("").to_lowercase();
         if ["ttf", "otf", "ttc", "otc"].contains(&extension.as_str()) {
             files.push(path);
@@ -71,7 +89,7 @@ fn font_files(dir: &Path, files: &mut Vec<PathBuf>) {
 fn scan_fonts() -> Vec<FontInfo> {
     let mut files = Vec::new();
     for dir in font_dirs() {
-        font_files(&dir, &mut files);
+        font_files(&dir, 0, &mut files);
     }
     // A BTreeMap keeps the names sorted and drops duplicates.
     let mut fonts = BTreeMap::new();
@@ -90,7 +108,7 @@ fn scan_fonts() -> Vec<FontInfo> {
 }
 
 /// Fonts used when nothing else is chosen (new texts, Material Test labels): the first one
-/// installed. Arial is on every Windows.
+/// installed. Arial is on every Windows and every macOS.
 pub const DEFAULT_FONTS: [&str; 1] = ["Arial"];
 
 /// The first of `DEFAULT_FONTS` that is installed, otherwise the first font found.
@@ -243,7 +261,7 @@ impl OutlineBuilder for Flattener {
 mod tests {
     use super::*;
 
-    /// Arial ships with every Windows installation.
+    /// Arial ships with every Windows and every macOS installation.
     fn arial() -> FontInfo {
         installed_fonts().into_iter().find(|font| font.name == "Arial").expect("Arial is installed")
     }
