@@ -25,7 +25,7 @@ LaserHM controls lasers with a GRBL controller.
 
 ### Install on Windows
 
-1. Go to the [Releases page](https://github.com/mhognogi/laserHM/releases).
+1. Go to the [Releases page](https://github.com/mhognogi/LaserHM/releases).
 2. Under **Assets**, download the file that ends in `x64-setup.exe`.
 3. Open the file.
 4. If Windows shows "Windows protected your PC", click **More info**. Then click **Run anyway**.
@@ -36,7 +36,7 @@ LaserHM controls lasers with a GRBL controller.
 
 ### Install on a Mac
 
-1. Go to the [Releases page](https://github.com/mhognogi/laserHM/releases).
+1. Go to the [Releases page](https://github.com/mhognogi/LaserHM/releases).
 2. Under **Assets**, download the file that ends in `universal.dmg`.
 3. Open the file.
 

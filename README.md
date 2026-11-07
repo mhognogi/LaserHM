@@ -59,7 +59,7 @@ Claude cannot start the laser: you always start the job.
 
 ## Download and install
 
-1. Go to the [Releases page](https://github.com/mhognogi/laserHM/releases).
+1. Go to the [Releases page](https://github.com/mhognogi/LaserHM/releases).
 2. Download the file for your computer:
    - Windows: the file that ends in `x64-setup.exe`.
    - Mac: the file that ends in `universal.dmg`.
@@ -82,7 +82,7 @@ Read the [user guide](docs/user-guide.md).
 LaserHM is tested only on a **Mecpow X3 Pro** diode laser, on Windows and macOS.
 Other GRBL lasers can operate differently.
 
-Did you use LaserHM with a different laser? Please tell us in an [issue](https://github.com/mhognogi/laserHM/issues).
+Did you use LaserHM with a different laser? Please tell us in an [issue](https://github.com/mhognogi/LaserHM/issues).
 Write the model of your laser, what worked and what did not work.
 
 ## ⚠️ Safety
